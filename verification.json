@@ -1,0 +1,25 @@
+{
+  "blind_terms_checked": [
+    "no_gate",
+    "name_log_gate",
+    "deny_all",
+    "exact_persisted_effect_verifier",
+    "north-mini",
+    "nemotron",
+    "openrouter",
+    "magpie",
+    "native_utility",
+    "strict_clean",
+    "minimal_clean",
+    "api_key",
+    "authorization",
+    "bearer "
+  ],
+  "credential_patterns_checked": 3,
+  "errors": [],
+  "ok": true,
+  "packet_count": 48,
+  "sample_count": 48,
+  "schema": "annotation-release-verification/1",
+  "synthetic_fixture_notice_present": true
+}
