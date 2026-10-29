@@ -1,0 +1,26 @@
+name: Claim an annotator role
+about: Claim role A or B before reading the packets
+labels: [annotation, help wanted]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Claim exactly one role. A and B must work independently and must not discuss individual cases before both files are locked.
+  - type: dropdown
+    id: role
+    attributes:
+      label: Role
+      options: [Annotator A, Annotator B, Adjudicator]
+    validations:
+      required: true
+  - type: checkboxes
+    id: independence
+    attributes:
+      label: Independence agreement
+      options:
+        - label: I have not read another annotator's labels or rationales.
+          required: true
+        - label: I will not discuss individual cases before A and B are both complete.
+          required: true
+        - label: I understand all identities and URLs are synthetic benchmark fixtures and will not contact or visit them.
+          required: true

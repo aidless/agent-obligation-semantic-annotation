@@ -1,0 +1,27 @@
+name: Submit completed annotations
+about: Submit a completed A, B, or adjudication JSONL file
+labels: [annotation]
+body:
+  - type: dropdown
+    id: role
+    attributes:
+      label: Completed role
+      options: [Annotator A, Annotator B, Adjudicator]
+    validations:
+      required: true
+  - type: input
+    id: pull_request
+    attributes:
+      label: Pull request URL
+      description: Open a pull request containing only your completed JSONL and paste its URL here.
+    validations:
+      required: true
+  - type: checkboxes
+    id: declaration
+    attributes:
+      label: Declaration
+      options:
+        - label: I labeled all cases independently and did not use model, guard, native, strict, or minimal results.
+          required: true
+        - label: Each row contains a nonempty allowed label list and a concise evidence-based rationale.
+          required: true

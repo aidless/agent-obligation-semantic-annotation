@@ -1,0 +1,23 @@
+name: Validate annotation submissions
+on:
+  pull_request:
+    paths:
+      - 'annotations-a.jsonl'
+      - 'annotations-b.jsonl'
+      - 'adjudication.jsonl'
+      - 'semantic-sample.json'
+      - 'scripts/validate_submission.py'
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate annotator A
+        if: ${{ hashFiles('annotations-a.jsonl') != '' }}
+        run: python3 scripts/validate_submission.py annotations-a.jsonl --role A
+      - name: Validate annotator B
+        if: ${{ hashFiles('annotations-b.jsonl') != '' }}
+        run: python3 scripts/validate_submission.py annotations-b.jsonl --role B
+      - name: Validate adjudication
+        if: ${{ hashFiles('adjudication.jsonl') != '' }}
+        run: python3 scripts/validate_submission.py adjudication.jsonl --role adjudicator

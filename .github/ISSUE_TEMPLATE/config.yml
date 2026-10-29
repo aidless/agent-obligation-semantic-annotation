@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Annotation instructions
+    url: https://github.com/aidless/agent-obligation-semantic-annotation#两名标注者如何工作
+    about: Read the Chinese instructions and codebook before claiming a role.
