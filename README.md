@@ -72,3 +72,41 @@ python3 tools/verify_approval_semantic.py \
 ## Release integrity
 
 This release contains exactly the 48 IDs listed in `semantic-sample.json`. The benchmark identities and URLs are synthetic fixtures. The v1 staging directory was not released because verification found 17 stale packets from an earlier sample build; v2 fixes the inventory without changing the frozen 48 selected IDs.
+
+## Tests
+
+```bash
+cd agent-obligation-semantic-annotation
+python -m pytest tests/test_validate.py -q    # 11 passed
+```
+
+11 个离线单测覆盖 `scripts/validate_submission.py` 的契约：
+- 合规 A/B 提交（48 行、全部冻结 ID、允许标签）通过；
+- 角色错误、空标签、未知标签、重复 sample_id、缺失 rationale 均被拒绝；
+- 第三人裁决可提交冻结 ID 的子集；未知 ID 被拒绝；
+- 冻结样本恰好 48 个唯一 ID；`packets/` 目录与冻结样本完全一致。
+
+## 证明什么 / 不证明什么
+
+**证明：** 验证器正确接受合规的双人盲审提交，正确拒绝格式错误（角色不符、
+空标签、非法标签、重复 ID、缺 rationale）与越界裁决；冻结样本含 48 个唯一
+案例，`packets/` 与其一一对应。所有 48 个 packet 的 identity/URL 是合成数据。
+
+**不证明：** 两名标注者已实际完成盲审（模板未填，`annotator-a/b-template.jsonl`
+仍是空 labels）；标签判定的信度（Cohen's kappa 需 A/B 真实标注完成后才可算）；
+任何真实用户数据（packet 内容全部来自 AgentDojo synthetic fixtures）。
+
+## 复现
+
+```bash
+cd agent-obligation-semantic-annotation
+python -m pytest tests/test_validate.py -q    # 11 passed
+
+# 单点：验证器对合规 A 提交
+python scripts/validate_submission.py \
+  annotator-a-template.jsonl --role A
+```
+
+模板当前为空 labels，运行会拒绝（`line 1: labels must be nonempty`）——这是
+**预期行为**，证明验证器会拦下未完成的提交。合规样本需按 README 判断顺序
+填充后才有意义。
