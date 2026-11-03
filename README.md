@@ -52,18 +52,30 @@ A、B 都完成后运行验证。若标签集合不同，把分歧案例交给�
 
 ## 验证
 
-在 autoresearcher 项目中运行：
+**每份提交先过仓内校验器**（只依赖标准库）：
+
+```bash
+python3 scripts/validate_submission.py annotations-a.jsonl --role A
+python3 scripts/validate_submission.py annotations-b.jsonl --role B
+python3 scripts/validate_submission.py adjudication.jsonl --role adjudicator
+```
+
+它检查：标注者角色正确、标签在白名单内、`rationale` 非空且不是标签名的复述、`sample_id` 无重复、
+且 A/B 的 ID 集合与冻结的 48 个 ID 完全一致。
+
+**A/B 之间的 kappa 与分歧裁决**由维护者在项目工作区运行（该脚本不在本仓内）：
 
 ```bash
 python3 tools/verify_approval_semantic.py \
-  --sample artifacts/minimal-obligation-annotation-release-20261029-v1/semantic-sample.json \
+  --sample <release>/semantic-sample.json \
   --annotator-a annotations-a.jsonl \
   --annotator-b annotations-b.jsonl \
   --adjudication adjudication.jsonl \
   --output semantic-gate.json
 ```
 
-`status=resolved` 才算完成。输出同时报告 A/B 主标签 Cohen's kappa 和尚未裁决的分歧数。
+`status=resolved` 才算完成，输出同时报告 A/B 主标签 Cohen's kappa 和尚未裁决的分歧数。
+**这个仓内没有该脚本**——它属于上游项目，克隆本仓的人跑不了这一段。
 
 ## 提交方式
 
@@ -72,3 +84,29 @@ python3 tools/verify_approval_semantic.py \
 ## Release integrity
 
 This release contains exactly the 48 IDs listed in `semantic-sample.json`. The benchmark identities and URLs are synthetic fixtures. The v1 staging directory was not released because verification found 17 stale packets from an earlier sample build; v2 fixes the inventory without changing the frozen 48 selected IDs.
+
+### What is blinded, and how it is enforced
+
+`semantic-sample.json` is a **blinded manifest**: it maps `blind_order` to `sample_id` and
+publishes nothing else. The answer axis — which guard arm produced an episode, whether the
+benchmark counted it, how it scored under the strict and minimal contracts, and the episode
+id — stays in the curator's private copy and is **not** in this repository.
+
+That separation is machine-checked, not asserted:
+
+```bash
+python3 scripts/check_blind_integrity.py
+# [PASS] no blind-term leak
+# [PASS] no credential pattern
+# BLIND INTEGRITY = PASS
+```
+
+The check scans **every file in the release**, not just `packets/`. It exits non-zero on any
+answer-axis or credential-shaped string. An earlier version of this release reported
+`ok: true` while the manifest still carried the answer axis — the checker only looked at
+`packets/`. If you see `ok: true` here, the checker is what is wrong, not the release.
+
+`scripts/validate_submission.py` additionally rejects a submission whose `rationale` merely
+restates its own label set, so a script that derives labels from the answer axis cannot be
+submitted as if it were an annotation. It still cannot *prove* a human wrote the rows —
+that remains a curation question, not a format question.

@@ -15,3 +15,15 @@
 4. Open a pull request. Automated validation checks all 48 IDs, allowed labels, nonempty rationales, role identity, and duplicates.
 5. The maintainer should avoid merging the first primary annotation file until the second annotator has locked their work. This prevents accidental unblinding.
 6. After A and B are locked, disagreements are given to a third person through `adjudication.jsonl`.
+
+## Before you open a pull request
+
+```bash
+python3 scripts/check_blind_integrity.py   # no answer axis may be visible
+python3 scripts/gen_sha256sums.py --check   # SHA256SUMS must be current
+python3 scripts/validate_submission.py annotations-a.jsonl --role A
+```
+
+Your submission file (`annotations-a.jsonl` / `annotations-b.jsonl`) must **not** be
+committed while the other annotator is still working — landing one file un-blinds the
+other. These paths are git-ignored on purpose; send the file to the maintainer directly.
