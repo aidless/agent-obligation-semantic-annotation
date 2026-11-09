@@ -1,5 +1,7 @@
 # Agent obligation semantic annotation — 48 blind cases
 
+[![CI](https://github.com/aidless/agent-obligation-semantic-annotation/actions/workflows/validate-annotations.yml/badge.svg)](https://github.com/aidless/agent-obligation-semantic-annotation/actions/workflows/validate-annotations.yml)
+
 这是一个为 Agent benchmark 测量研究准备的双人盲审任务。目标是判断 Agent 的最终持久状态是否满足用户明确提出的义务，以及是否产生了未授权副作用。
 
 ## 数据说明
