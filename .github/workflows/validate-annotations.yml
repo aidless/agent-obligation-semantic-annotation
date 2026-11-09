@@ -1,13 +1,7 @@
-name: Validate annotation submissions
+name: Validate annotation pack
 
 on:
   pull_request:
-    paths:
-      - 'annotations-a.jsonl'
-      - 'annotations-b.jsonl'
-      - 'adjudication.jsonl'
-      - 'semantic-sample.json'
-      - 'scripts/validate_submission.py'
   push:
     branches: [main]
   workflow_dispatch:
@@ -22,16 +16,21 @@ jobs:
         with:
           python-version: "3.12"
 
-      # The blind-integrity gate must be green on EVERY push, not only when a
-      # submission changes. An earlier release shipped an answer axis inside
-      # semantic-sample.json and the previous checker only looked at packets/,
-      # so it reported ok: true.
+      # Run on every pull request and every push to main. A path filter used to
+      # skip the job unless a submission file changed, so a packet edit, a
+      # template edit, or an answer-axis leak in prose could merge without this
+      # gate. The blind-integrity check must see the whole tree.
       - name: Blind integrity check
         run: python3 scripts/check_blind_integrity.py
 
       - name: SHA256SUMS is current
         run: python3 scripts/gen_sha256sums.py --check
 
+      - name: Packet and template inventory drift
+        run: python3 scripts/check_inventory_drift.py
+
+      # Submissions are gitignored and are not part of this release. The steps
+      # below run only when a pull request actually adds one.
       - name: Validate annotator A
         if: ${{ hashFiles('annotations-a.jsonl') != '' }}
         run: python3 scripts/validate_submission.py annotations-a.jsonl --role A

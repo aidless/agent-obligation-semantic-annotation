@@ -2,11 +2,15 @@
   "schema": "artifact-provenance/2",
   "name": "minimal-obligation-annotation-release",
   "version": "v3",
-  "status": "prepared_not_published",
+  "status": "work_in_progress",
+  "status_note": "Task pack is in the repository. Annotator labels, adjudication, and agreement have not been produced. SHA256SUMS is the digest CI checks; the per-file sha256 snapshot below is rewritten with the tree and is not a second authority.",
+  "study_status": "work_in_progress",
+  "annotations_completed": false,
+  "agreement": null,
   "sources": [
     "minimal-obligation-study-20261029-v1 frozen 48-case sample"
   ],
-  "command": "python3 scripts/gen_sha256sums.py && python3 scripts/check_blind_integrity.py --json",
+  "command": "python3 scripts/gen_sha256sums.py --check && python3 scripts/check_blind_integrity.py && python3 scripts/check_inventory_drift.py",
   "inputs": [
     "artifacts/minimal-obligation-study-20261029-v1/semantic-sample.json",
     "artifacts/minimal-obligation-study-20261029-v1/packets/"
@@ -23,13 +27,18 @@
     },
     {
       "path": "CODEBOOK.zh-CN.md",
-      "sha256": "babc3736137435f28f5b7492179d655866fd56e79faa039d391567b5907e09ed",
-      "bytes": 1362
+      "sha256": "7b32a011396815294dc39b6e352c6645e65f65da7afded56e16bdc3921039b02",
+      "bytes": 1467
     },
     {
       "path": "CONTRIBUTING.md",
-      "sha256": "ea23e30d1d580ca1f978e3eabb69ca6fa81e8bd8da20984500d1e4221ea74c08",
-      "bytes": 1155
+      "sha256": "a175c63491601205957e7bb9f88ba8e7690ccc7bc361cf1abcd73c3f6ee79837",
+      "bytes": 1847
+    },
+    {
+      "path": "FAILURE_MODES.md",
+      "sha256": "badab29e42e6f16f7488fb181cec2997f0bb3eccbaf044b994a91085f8dea442",
+      "bytes": 3231
     },
     {
       "path": "LICENSE",
@@ -38,8 +47,8 @@
     },
     {
       "path": "README.md",
-      "sha256": "b4e2650791e2968df09d67c0cb569268055e980add859f80958dde0fa00e1e0a",
-      "bytes": 5733
+      "sha256": "dd19c2d69f01b39d5b4941a1f591957e637bcf04cfa5b7f3eb63f27294073628",
+      "bytes": 7482
     },
     {
       "path": "adjudication-template.jsonl",
@@ -304,13 +313,18 @@
     },
     {
       "path": "provenance.md",
-      "sha256": "ac5c40eef1b5087a25cf9cb41091183072edf378939f7bd79a80985af9edf2b0",
-      "bytes": 595
+      "sha256": "78810b720940ca3e49de525a39b0cf4eba4587bc6b09439dc2369156a01b58f7",
+      "bytes": 758
     },
     {
       "path": "scripts/check_blind_integrity.py",
       "sha256": "c6c377ac55f00be219fbfd9e92e23c5016b3b2d4e51bd8d573ed1313e2c0d3b4",
       "bytes": 4740
+    },
+    {
+      "path": "scripts/check_inventory_drift.py",
+      "sha256": "9d9bb0b38b60c4c915b8c423e21053c6ea944de4d919034ddd83863dafc4e709",
+      "bytes": 11113
     },
     {
       "path": "scripts/gen_sha256sums.py",
@@ -329,13 +343,14 @@
     },
     {
       "path": "verification.json",
-      "sha256": "d5be751069e6687455360877f286c5cb25ade8d0da1e2ddf390b7f73da452c36",
-      "bytes": 628
+      "sha256": "44b2d926a07400bd83705dcf1783716c371b103dba6d08364259deb75165844d",
+      "bytes": 905
     }
   ],
   "verification": {
-    "sha256sums": "scripts/gen_sha256sums.py (regenerates; --check verifies)",
+    "sha256sums": "scripts/gen_sha256sums.py (regenerates; --check verifies). SHA256SUMS is the digest CI checks.",
     "blind_integrity": "scripts/check_blind_integrity.py (scans every file for answer-axis and credential strings)",
-    "submission_validation": "scripts/validate_submission.py --role {A,B,adjudicator}"
+    "inventory_drift": "scripts/check_inventory_drift.py (48 packets, A/B templates match frozen ids, agreement stays null)",
+    "submission_validation": "scripts/validate_submission.py --role {A,B,adjudicator} (no submission is committed)"
   }
 }

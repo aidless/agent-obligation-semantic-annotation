@@ -19,10 +19,13 @@
 ## Before you open a pull request
 
 ```bash
-python3 scripts/check_blind_integrity.py   # no answer axis may be visible
-python3 scripts/gen_sha256sums.py --check   # SHA256SUMS must be current
+python3 scripts/check_blind_integrity.py    # no answer axis may be visible
+python3 scripts/gen_sha256sums.py --check    # SHA256SUMS must be current
+python3 scripts/check_inventory_drift.py     # 48 packets; A/B templates match ids
 python3 scripts/validate_submission.py annotations-a.jsonl --role A
 ```
+
+Do not add an agreement statistic to the pull request. None has been computed.
 
 Your submission file (`annotations-a.jsonl` / `annotations-b.jsonl`) must **not** be
 committed while the other annotator is still working — landing one file un-blinds the
