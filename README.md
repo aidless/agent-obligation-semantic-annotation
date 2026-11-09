@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/aidless/agent-obligation-semantic-annotation/actions/workflows/validate-annotations.yml/badge.svg)](https://github.com/aidless/agent-obligation-semantic-annotation/actions/workflows/validate-annotations.yml)
 
+> **English TL;DR**: A double-blind annotation task for agent benchmark measurement: two annotators independently label 48 JSON packets (synthetic AgentDojo fixtures) on whether the agent's final persistent state fulfilled the user's explicit obligations and whether unauthorized side effects occurred, using a fixed label whitelist and third-party adjudication for disagreements. Work from the copied templates and validate with `scripts/validate_submission.py`. Its distinctive feature is enforced blinding: the answer axis stays out of the repository, checked by `check_blind_integrity.py`.
+
 这是一个为 Agent benchmark 测量研究准备的双人盲审任务。目标是判断 Agent 的最终持久状态是否满足用户明确提出的义务，以及是否产生了未授权副作用。
 
 ## 数据说明
