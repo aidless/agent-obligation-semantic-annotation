@@ -35,11 +35,31 @@ cp annotator-b-template.jsonl annotations-b.jsonl
 - `native_log_success`：packet 本身显示 benchmark/日志成功；通常盲包不会提供这个信息。
 - `semantic_uncertainty`：现有证据不足，不能可靠判断。
 
-每一行示例：
+- 每一行示例：
 
 ```json
 {"annotator":"A","sample_id":"005ad83ce0a3851b","labels":["requested_effect_present"],"rationale":"The requested calendar event is present with the requested title, time, and location; no unrelated state change appears."}
 ```
+
+## 标注进度与数据汇总
+
+下表数字由 python 对仓库内文件**现算**得出（2026-11-10；计算口径见"来源"列）：
+
+| 项目 | 数值 | 来源（现算命令/文件） |
+|---|---|---|
+| 冻结样本 | 48 / 48 requested，seed=17 | `semantic-sample.json`（`sample_size`/`requested_size`/`seed`） |
+| packets | 48 个 JSON | `ls packets/*.json \| wc -l` |
+| 标注者模板行数 | A：48（sample_id 全 unique）；B：48；adjudication：0 | `wc -l annotator-*-template.jsonl adjudication-template.jsonl` |
+| **已回收人工标注** | **0**（模板未填：`validate_submission.py` 对模板实测报 `line 1: labels must be nonempty`） | 本机实跑 validator |
+| task_key 分布 | travel 32 / workspace 16（9 个 distinct task_key） | 遍历 packets 的 `task_key` 字段 |
+| 工具调用规模 | 221 次 tool call，19 个 distinct 工具；每 packet 2–8 次（均值 4.6） | 遍历 packets 的 `tool_sequence` |
+| 最高频工具 | `create_calendar_event` 41 次，其次 hotels/restaurants 只读查询各 16 次 | 同上 |
+| 盲审完整性 | 扫描 67 个文件：`[PASS] no blind-term leak` / `[PASS] no credential pattern` → **BLIND INTEGRITY = PASS** | `python3 scripts/check_blind_integrity.py`（2026-11-10 实跑） |
+| release 自检记录 | `verification.json`：ok=true，files_scanned=66，packet_count=48，schema `annotation-release-verification/2` | `verification.json` |
+
+进度口径：v2 release 已冻结（48 ID、双盲清单、盲审机检通过），**标注回收尚未开始**——
+A/B 两份 `annotations-*.jsonl` 产生并通过 validator、第三人裁决完成（`status=resolved`）之前，
+本仓不存在任何语义标签结果；不要把上表的 packet 统计当作标注结论引用。
 
 ## 判断顺序
 
