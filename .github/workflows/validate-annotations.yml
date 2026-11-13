@@ -1,4 +1,5 @@
 name: Validate annotation submissions
+
 on:
   pull_request:
     paths:
@@ -7,17 +8,38 @@ on:
       - 'adjudication.jsonl'
       - 'semantic-sample.json'
       - 'scripts/validate_submission.py'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: "3.12"
+
+      # The blind-integrity gate must be green on EVERY push, not only when a
+      # submission changes. An earlier release shipped an answer axis inside
+      # semantic-sample.json and the previous checker only looked at packets/,
+      # so it reported ok: true.
+      - name: Blind integrity check
+        run: python3 scripts/check_blind_integrity.py
+
+      - name: SHA256SUMS is current
+        run: python3 scripts/gen_sha256sums.py --check
+
       - name: Validate annotator A
         if: ${{ hashFiles('annotations-a.jsonl') != '' }}
         run: python3 scripts/validate_submission.py annotations-a.jsonl --role A
+
       - name: Validate annotator B
         if: ${{ hashFiles('annotations-b.jsonl') != '' }}
         run: python3 scripts/validate_submission.py annotations-b.jsonl --role B
+
       - name: Validate adjudication
         if: ${{ hashFiles('adjudication.jsonl') != '' }}
         run: python3 scripts/validate_submission.py adjudication.jsonl --role adjudicator

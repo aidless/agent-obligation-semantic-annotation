@@ -1,2 +1,8 @@
 semantic-gate.json
 *.tmp
+
+# Annotator submissions must not be committed: if A's file lands first, B is
+# un-blinded. CONTRIBUTING.md tells contributors to create these locally.
+annotations-a.jsonl
+annotations-b.jsonl
+adjudication.jsonl

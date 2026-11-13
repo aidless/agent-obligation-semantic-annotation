@@ -41,6 +41,23 @@ def main() -> int:
     ids = [str(r.get("sample_id", "")) for r in rows]
     if len(ids) != len(set(ids)):
         raise SystemExit("duplicate sample_id")
+    # A machine-derived label would arrive with no rationale of its own. The
+    # earlier validator accepted such rows, which meant "blind annotation" could
+    # be satisfied by a script that reads the answer axis. Require that the
+    # rationale is prose written for this sample, not a restatement of the
+    # label set.
+    for n, row in enumerate(rows, 1):
+        rationale = str(row.get("rationale", "")).strip()
+        labels = set(row.get("labels") or [])
+        if len(rationale) < 12:
+            raise SystemExit(
+                f"line {n}: rationale must be a short prose explanation (>= 12 chars); "
+                "a bare label restatement is not an annotation"
+            )
+        if rationale.lower() in {l.lower() for l in labels}:
+            raise SystemExit(
+                f"line {n}: rationale only restates the label set; write why"
+            )
     if a.role != "adjudicator" and set(ids) != expected:
         raise SystemExit(f"expected exactly {len(expected)} frozen sample IDs, got {len(set(ids))}")
     if a.role == "adjudicator" and not set(ids) <= expected:
