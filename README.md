@@ -172,3 +172,48 @@ python scripts/validate_submission.py \
 模板当前为空 labels，运行会拒绝（`line 1: labels must be nonempty`）——这是
 **预期行为**，证明验证器会拦下未完成的提交。合规样本需按 README 判断顺序
 填充后才有意义。
+
+## 验收题库与复算
+
+`eval/cases.jsonl` 是 20 条可执行验收题，覆盖九个口径轴，全部**真读本仓文件、真跑本仓脚本**：
+19 条 `expr`/`raises` 在 runner 里现场解析 `semantic-sample.json`／`packets/*.json`／
+`tests/test_validate.py`（用 `ast` 数），或直接调用 `scripts/validate_submission.py`、
+`scripts/check_blind_integrity.py` 取回真实退出码与 JSON 报告；剩下 1 条 `doc` 断言
+README 里的条目数声明。期望值不是抄文档，而是**跑出来的**——改一个 packet、
+改一行验证器规则、加一个标签，对应题目立刻变红。
+
+| axis | 条数 | 考什么 |
+|---|---|---|
+| `manifest/freeze` | 2 | 冻结样本量 48；`blind_order` 是 0..47 的完整排列（不缺口、不重复） |
+| `packets/inventory` | 3 | `packets/` 实文件数 48；48 个 packet 共用 1 个 schema；`travel/` 32 个 |
+| `packets/tool-sequence` | 3 | 工具调用合计 221 次；distinct 工具名 19 个；`create_calendar_event` 41 次 |
+| `packets/state-changes` | 2 | 持久状态差异 66 条；其中 `operation=set`（改既有对象）30 条 |
+| `validator/contract` | 3 | 空模板退出码 1；合规 A 提交报 `rows=48`；裁决子集放行（退出码 0） |
+| `validator/rules` | 3 | 白名单 8 个标签；越界标签报 `unknown labels`；`rationale` 少于 12 字符被拒 |
+| `integrity/blind-scan` | 2 | 全树扫描 `ok=true`；答案轴术语表 14 个词 |
+| `tests/contract` | 1 | `tests/test_validate.py` 的 `def test_` 契约测试 11 条 |
+| `docs/claims` | 1 | README 的「共 48 个 JSON packet」声明与实文件数一致 |
+
+```bash
+python3 eval/run_cases.py            # 20/20 cases passed
+python3 eval/run_cases.py --save     # 顺带把结果写进 eval/run-report.json
+python3 eval/run_cases.py --selftest # 篡改第一条期望值，必须变红（19/20，证明这套题会失败）
+```
+
+`--selftest` 的红色不是意外：它把 `MF-01` 的 `expected` 换成不可能的值，20 条里 19 条通过、
+`manifest/freeze` 记 1 条失败，退出码 0 表示「门确实会红」。若它仍然全绿，说明这套题是装饰。
+
+**数字如何复算**：每条 case 的 `verify` 就是复算代码，`source` 是它读的那个文件。
+`--save` 写出的 `eval/run-report.json` 里每条带 `id`/`axis`/`detail`，`detail` 是实际算出来的值
+（例如 `221`、`raised CalledProcessError`、`共 48 个 JSON packet`）。要重建整份报告重跑一次
+`--save` 即可，不手工抄数；`detail` 与 `verify` 一起看，就能从仓内文件复现该数字。
+
+**失败归因**：`run_cases.py` 不只报通过率，失败时按 `axis` 汇总（例如
+`validator/rules: 1 条 —— VR-02`），直接指出是「验证器的哪条规则」坏了，而不是只丢一个通过率。
+
+题库口径的三条约束，改题时别破：
+
+1. 同一 `axis` 最多 3 条——一个轴坏了，失败条目数就是它的严重度上限；
+2. `expr` 的期望值必须由被测文件算出，不许把 README 里的数字抄进 `expected`（否则题只测 README）；
+3. 新增题目不得写入答案轴信息——本题库自身也在 `scripts/check_blind_integrity.py` 的扫描范围内，
+   泄漏术语会让 `IN-01` 直接变红。

@@ -1,0 +1,129 @@
+{
+ "total": 20,
+ "passed": 20,
+ "failed": 0,
+ "selftest": false,
+ "failed_by_axis": {},
+ "results": [
+  {
+   "id": "MF-01",
+   "axis": "manifest/freeze",
+   "ok": true,
+   "detail": "48"
+  },
+  {
+   "id": "MF-02",
+   "axis": "manifest/freeze",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "id": "PK-01",
+   "axis": "packets/inventory",
+   "ok": true,
+   "detail": "48"
+  },
+  {
+   "id": "PK-02",
+   "axis": "packets/inventory",
+   "ok": true,
+   "detail": "1"
+  },
+  {
+   "id": "PK-03",
+   "axis": "packets/inventory",
+   "ok": true,
+   "detail": "32"
+  },
+  {
+   "id": "TL-01",
+   "axis": "packets/tool-sequence",
+   "ok": true,
+   "detail": "221"
+  },
+  {
+   "id": "TL-02",
+   "axis": "packets/tool-sequence",
+   "ok": true,
+   "detail": "19"
+  },
+  {
+   "id": "TL-03",
+   "axis": "packets/tool-sequence",
+   "ok": true,
+   "detail": "41"
+  },
+  {
+   "id": "ST-01",
+   "axis": "packets/state-changes",
+   "ok": true,
+   "detail": "66"
+  },
+  {
+   "id": "ST-02",
+   "axis": "packets/state-changes",
+   "ok": true,
+   "detail": "30"
+  },
+  {
+   "id": "VL-01",
+   "axis": "validator/contract",
+   "ok": true,
+   "detail": "1"
+  },
+  {
+   "id": "VL-02",
+   "axis": "validator/contract",
+   "ok": true,
+   "detail": "48"
+  },
+  {
+   "id": "VL-03",
+   "axis": "validator/contract",
+   "ok": true,
+   "detail": "0"
+  },
+  {
+   "id": "VR-01",
+   "axis": "validator/rules",
+   "ok": true,
+   "detail": "8"
+  },
+  {
+   "id": "VR-02",
+   "axis": "validator/rules",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "id": "VR-03",
+   "axis": "validator/rules",
+   "ok": true,
+   "detail": "raised CalledProcessError"
+  },
+  {
+   "id": "IN-01",
+   "axis": "integrity/blind-scan",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "id": "IN-02",
+   "axis": "integrity/blind-scan",
+   "ok": true,
+   "detail": "14"
+  },
+  {
+   "id": "TS-01",
+   "axis": "tests/contract",
+   "ok": true,
+   "detail": "11"
+  },
+  {
+   "id": "DC-01",
+   "axis": "docs/claims",
+   "ok": true,
+   "detail": "共 48 个 JSON packet"
+  }
+ ]
+}
